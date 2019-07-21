@@ -10,7 +10,7 @@ var colors = [["#69d2e7","#a7dbd8","#e0e4cc","#f38630","#fa6900"],["#fe4365","#f
 let rndColors, seedPoints, maxLines;
 
 function setup() {
-  createCanvas(window.innerWidth, window.innerHeight);
+  createCanvas(window.innerWidth - 20, window.innerHeight);
   rndColors = colors[Math.floor(Math.random() * 100)];
   background(rndColors[0]);
   seedPoints = new Array(Math.floor(window.innerHeight / 1000));
