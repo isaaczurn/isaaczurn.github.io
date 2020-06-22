@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>⌯</title>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <link rel="stylesheet" type="text/css" href="style.css" />
+    </head>
+
+    <body>
+        <!-- <div class="headerBar">
+            Unfinished Personal Project XXIV: Attack of the Lists
+        </div> -->
+
+        <div id="board">
+            <ul class="listOfLists">
+                <card-list class="cardList" v-for="(cardList, index) in listOfLists" 
+                :card-list="cardList" :list-index="index" :key="cardList.title">
+                </card-list>
+                <add-list :lists="listOfLists"></add-list>
+            </ul>
+        </div>
+
+        <script>
+            // A component to represent the card objects
+            // card: the card object to render
+            Vue.component("card-basic", {
+                props: {
+                    card: Object,
+                    cards: Array,
+                    cardIndex: Number
+                },
+                data: function () {
+                    return {
+
+                    }
+                },
+                template: '\
+                    <div> \
+                        <li> \
+                            {{ card.title }} \
+                            <button class="deleteCardButton" v-on:click="backToTheVoidWithYou">X</button>\
+                        </li> \
+                    </div>',
+                methods: {
+                    backToTheVoidWithYou: function (event) {
+                        this.cards.splice(this.cardIndex, 1)
+                    }
+                }
+            });
+
+            // Component for the button at the end of the lists that adds card
+            // cards: a reference to the lists array of card in that list
+            Vue.component("card-add", {
+                props: {
+                    cards: Array
+                },
+                data: function () {
+                    return {
+                        value: ""
+                    }
+                },
+                template: ' \
+                    <div class="cardAddContainer"> \
+                        <input class="cardAddText" v-model="value" placeholder="New Card"/>\
+                        <button class="cardAddButton" v-on:click="addcard">+ Add</button>\
+                    </div>',
+                methods: {
+                    addcard: function (event) {
+                        this.cards.push({ 
+                                title: this.value,
+                                description: ''
+                            })
+                        this.value = ""
+                    }
+                }
+            });
+
+            // Component representing the function to add another list
+            // lists: the array containing all the lists, will be pushing new list onto this
+            Vue.component("add-list", {
+                props: {
+                    lists: Array
+                },
+                data: function () {
+                    return {
+                        value: ""
+                    }
+                },
+                template: ' \
+                    <div class="listAddContainer"> \
+                        <input class="listAddText" v-model="value" placeholder="New List"/>\
+                        <button class="listAddButton" v-on:click="addlist">+ Add</button>\
+                    </div>',
+                methods: {
+                    addlist: function (event) {
+                        this.lists.push({
+                            id: this.lists.length, 
+                            title: this.value, 
+                            cards: []
+                        })
+                        this.value = ""
+                    }
+                }
+            });
+
+            // Component controlling a list of cards
+            // cardList: the list to render
+            Vue.component("card-list", {
+                props: {
+                    cardList: Object,
+                    listIndex: Number
+                },
+                data: function () {
+                    return {
+                        
+                    }
+                },
+                template: '\
+                    <div> \
+                        <div class="listTitleBar"> \
+                            <span class="listTitle">{{ cardList.title }}</span> \
+                            <button class="listRemoveButton" v-on:click="removeList">X</button>\
+                        </div> \
+                        <card-basic class="cardBasic" v-for="(card,index) in cardList.cards" \
+                        :card="card" :cards="cardList.cards" :cardIndex="index" :key="card.title"> \
+                        </card-basic> \
+                        <card-add :cards="cardList.cards"></card-add> \
+                    </div>',
+                methods: {
+                    removeList: function (event) {
+                        store.state.listOfLists.splice(this.listIndex,1)
+                    }
+                } 
+            });
+
+            var store = {
+                state: {
+                    listOfLists: [
+                        {id: 0, title: "一", cards: [
+                            { 
+                                title: 'Foo',
+                                description: 'a description'
+                            },
+                            { 
+                                title: 'Bar',
+                                description: 'a description'
+                            },
+                            { 
+                                title: 'A Longer Title',
+                                description: 'a description'
+                            }
+                        ]},
+                        {id: 1, title: "二", cards: [
+                            { 
+                                title: 'La',
+                                description: 'a description'
+                            },
+                            { 
+                                title: 'Ti',
+                                description: 'a description'
+                            },
+                            { 
+                                title: 'Da',
+                                description: 'a description'
+                            },
+                            { 
+                                title: 'An extra card',
+                                description: 'a description'
+                            }
+                        ]}
+                    ]
+                }
+            }
+
+            var board = new Vue({
+                el: "#board",
+                data: store.state
+            });
+        </script>
+    </body>
+
+</html>
